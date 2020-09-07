@@ -1,8 +1,8 @@
-# TFC-Metallum
+# TFC-Cellars
 Addon for TerraFirmaCraft: The New Generation
 
 ## Goal
-Add metals, ores and alloys from other to TFC:TNG
+Add a cellar that can keep your food preserved
 
 ## Contributing
 
