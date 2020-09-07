@@ -1,0 +1,19 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"model": "cube",
+		"textures": {
+			"particle": "blocks/planks_oak",
+			"north": "blocks/planks_oak",
+			"south": "blocks/planks_oak",
+			"west": "blocks/planks_oak",
+			"east": "blocks/planks_oak",
+			"up": "cellars:block/ice_bunker",
+			"down": "cellars:block/ice_bunker"
+		}
+	},
+	"variants": {
+		"normal": [{}],
+		"inventory": [{}]
+	}
+}

@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures":
+    {
+        "layer0": "cellars:item/toolheads/wrought_iron_ice_saw_blade"
+    }
+}

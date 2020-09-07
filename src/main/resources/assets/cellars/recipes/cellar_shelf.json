@@ -1,0 +1,16 @@
+{
+	"result": {
+		"item": "cellars:cellar_shelf"
+	},
+	"pattern": [
+		"p p",
+		"ppp",
+		"p p"
+	],
+	"type": "forge:ore_shaped",
+	"key": {
+		"p": {
+			"type": "forge:ore_dict", "ore": "lumber"
+		}
+	}
+}

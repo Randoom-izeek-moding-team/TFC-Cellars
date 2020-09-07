@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"result": {
+		"item": "cellars:tfc_iron_ice_saw"
+	},
+	"pattern": [
+		"b",
+		"s"
+	],
+	"key": {
+		"b": {
+			"item": "cellars:tfc_iron_ice_saw_blade"
+		},
+		"s": {
+			"item": "minecraft:stick"
+		}
+	}
+}

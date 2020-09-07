@@ -1,0 +1,19 @@
+{
+	"result": {
+		"item": "cellars:block_ice_bunker"
+	},
+	"pattern": [
+		"p p",
+		"s s",
+		"p p"
+	],
+	"type": "forge:ore_shaped",
+	"key": {
+		"p": {
+			"type": "forge:ore_dict", "ore": "lumber"
+		},
+		"s":{
+			"type": "forge:ore_dict", "ore": "plankWood"
+		}
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"result": {
+		"item": "cellars:item_cellar_door"
+	},
+	"pattern": [
+		"pcp",
+		"ptp",
+		"pcp"
+	],
+	"type": "forge:ore_shaped",
+	"key": {
+		"p": {
+			"type": "forge:ore_dict", "ore": "lumber"
+		},
+		"t": {
+			"type": "forge:ore_dict", "ore": "straw"
+		},
+		"c":{
+			"item": "minecraft:clay_ball"
+		}
+	}
+}
