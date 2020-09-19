@@ -34,7 +34,7 @@ public class ContainerCellarShelf extends Container {
 			for (int col = 0; col < 9; ++col) {
 				int x = 8 + col * 18;
 				int y = row * 18 + 84;
-				this.addSlotToContainer(new Slot(playerInventory, col + row * 9 + 10, x, y));
+				this.addSlotToContainer(new Slot(playerInventory, col + row * 9 + 9, x, y));
 			}
 		}
 
