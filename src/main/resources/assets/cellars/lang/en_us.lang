@@ -1,6 +1,11 @@
+tfc.food_traits.cellar_cold=cold
+tfc.food_traits.cellar_frozen=frozen
+
 tile.cellars.cellar_door.name=Cellar Door
 tile.cellars.block_ice_bunker.name=Ice Bunker
 tile.cellars.cellar_block.name=Cellar Block
+tile.cellars.industrial_cellar_block.name=Industrial Cellar Block
+tile.cellars.basic_electric_cooler.name=Basic Electric Cooler
 tile.cellars.cellar_shelf.name=Cellar Shelf
 
 item.cellars.ice_chunks.name=Ice Chunks

@@ -7,7 +7,9 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import randoom97.cellars.blocks.BlockIceBunker;
 import randoom97.cellars.blocks.CellarBlock;
+import randoom97.cellars.blocks.BasicElectricCooler;
 import randoom97.cellars.blocks.CellarShelf;
+import randoom97.cellars.blocks.IndustrialCellarBlock;
 import randoom97.cellars.items.IceChunks;
 import randoom97.cellars.items.IceSaw;
 import randoom97.cellars.items.IceSawBlade;
@@ -82,9 +84,13 @@ public class ModItems {
 
 	public static void registerItems(RegistryEvent.Register<Item> event) {
 		event.getRegistry().register(new ItemBlock(ModBlocks.cellarBlock).setRegistryName(CellarBlock.CELLAR_BLOCK));
+		event.getRegistry().register(new ItemBlock(ModBlocks.industrialCellarBlock).setRegistryName(IndustrialCellarBlock.INDUSTRIAL_CELLAR_BLOCK));
+		
 		event.getRegistry().register(new ItemCellarDoor());
 		event.getRegistry()
 				.register(new ItemBlock(ModBlocks.blockIceBunker).setRegistryName(BlockIceBunker.BLOCK_ICE_BUNKER));
+		event.getRegistry()
+				.register(new ItemBlock(ModBlocks.basicElectricCooler).setRegistryName(BasicElectricCooler.BASIC_ELECTRIC_COOLER));
 		event.getRegistry().register(new ItemBlock(ModBlocks.cellarShelf).setRegistryName(CellarShelf.CELLAR_SHELF));
 		event.getRegistry().register(new IceChunks());
 

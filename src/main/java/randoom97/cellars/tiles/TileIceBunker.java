@@ -176,7 +176,7 @@ public class TileIceBunker extends TileEntity implements ITickable {
 				internalTemp -= coolingChange;
 				internalTemp -= envTempChange;
 
-				// TODO notify shelves
+				
 				for (int y = 1; y <= size[4]; y++) {
 					for (int z = -size[2]; z <= size[0]; z++) {
 						for (int x = -size[1]; x <= size[3]; x++) {
@@ -341,7 +341,7 @@ public class TileIceBunker extends TileEntity implements ITickable {
 					}
 
 					// upper part of door
-					if (y == 2 && block == ModBlocks.cellarDoor) {
+					if (y == 2 && block == ModBlocks.cellarDoor && door1!= null ) {
 						if (!pos.add(x, y, z).equals(door1.add(0, 1, 0))) {
 							Cellars.logger.log(Level.DEBUG, "Upper door doesn't match lower door!");
 							return false;
