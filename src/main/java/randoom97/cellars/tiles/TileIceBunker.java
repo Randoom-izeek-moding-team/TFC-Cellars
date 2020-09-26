@@ -278,5 +278,9 @@ public class TileIceBunker extends CellarCore implements ITickable {
 		}
 		return false;
 	}
+	public int getTemperatureInt() {
+		int temp = (int)(getTemperature()*1000);
+		return temp;
+	}
 
 }

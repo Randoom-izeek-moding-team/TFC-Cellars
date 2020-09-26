@@ -139,6 +139,7 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 	}
 
 	public void setTemperature(float temp) {
+		//Cellars.logger.info("temp: "+temp);
 		this.internalTemp = temp;
 	}
 
@@ -284,6 +285,11 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 	public void setEnergyStored(int data) {
 		this.energyContainer.setEnergy(data);
 
+	}
+
+	public int getTemperatureInt() {
+		int temp = (int)(getTemperature()*1000);
+		return temp;
 	}
 
 }

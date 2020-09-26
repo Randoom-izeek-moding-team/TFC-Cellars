@@ -98,7 +98,7 @@ public class ContainerBasicElectricCooler extends Container {
 		super.detectAndSendChanges();
 		for(IContainerListener listener : listeners) {
 			listener.sendWindowProperty(this, ENERGY_ID, te.getEnergyStored());
-			listener.sendWindowProperty(this, TEMPERATURE_ID, Float.floatToIntBits(te.getTemperature()));
+			listener.sendWindowProperty(this, TEMPERATURE_ID, te.getTemperatureInt());
 			listener.sendWindowProperty(this, DOORS_FOUND_ID, te.getDoorsFound() ? 1 : 0);
 			listener.sendWindowProperty(this, DOORS_OPEN_ID, te.getDoorsOpen() ? 1 : 0);
 			listener.sendWindowProperty(this, FORMED_ID, te.getFormed() ? 1 : 0);
@@ -109,7 +109,7 @@ public class ContainerBasicElectricCooler extends Container {
 	public void updateProgressBar(int id, int data) {
 		switch(id) {
 		case TEMPERATURE_ID:
-			te.setTemperature(Float.intBitsToFloat(data));
+			te.setTemperature( data/(float)1000);
 			break;
 		case DOORS_FOUND_ID:
 			te.setDoorsFound(data == 1);

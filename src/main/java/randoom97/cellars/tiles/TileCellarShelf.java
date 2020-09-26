@@ -151,5 +151,9 @@ public class TileCellarShelf extends TileEntity implements ITickable {
 		}
 		
 	}
+	public int getTemperatureInt() {
+		int temp = (int)(getTemperature()*1000);
+		return temp;
+	}
 	
 }
