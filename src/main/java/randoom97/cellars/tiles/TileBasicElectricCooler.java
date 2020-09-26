@@ -240,9 +240,6 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 		door2 = null;
 		formed = false;
 		int[] CellarInfo = this.structureComplete();
-		for (int i = 0; i < CellarInfo.length; i++) {
-			// Cellars.logger.info(i + "" + CellarInfo[i]);
-		}
 		for (int i = 0; i < size.length; i++) {
 			size[i] = CellarInfo[1 + i];
 		}
