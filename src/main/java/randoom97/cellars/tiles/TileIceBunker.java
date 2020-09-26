@@ -6,7 +6,6 @@ import net.dries007.tfc.objects.blocks.BlocksTFC;
 import net.dries007.tfc.util.climate.ClimateTFC;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoor;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -15,7 +14,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -23,8 +21,9 @@ import randoom97.cellars.Cellars;
 import randoom97.cellars.ModBlocks;
 import randoom97.cellars.ModItems;
 import randoom97.cellars.config.CellarsConfig;
+import randoom97.cellars.utils.CellarCore;
 
-public class TileIceBunker extends TileEntity implements ITickable {
+public class TileIceBunker extends CellarCore implements ITickable {
 
 	public static final int SIZE = 4;
 
@@ -38,6 +37,7 @@ public class TileIceBunker extends TileEntity implements ITickable {
 	private float internalTemp = 20;
 	private long tickCount = 0;
 	private boolean cooling = false;
+	private float insulation =1;
 
 	private ItemStackHandler itemStackHandler = new ItemStackHandler(SIZE) {
 
@@ -164,13 +164,13 @@ public class TileIceBunker extends TileEntity implements ITickable {
 					envTempChange = (internalTemp - environTemp) * CellarsConfig.RATE_OF_CHANGE;
 				} else {
 					envTempChange = (internalTemp - environTemp)
-							* (CellarsConfig.RATE_OF_CHANGE / CellarsConfig.INSULATION);
+							* (CellarsConfig.RATE_OF_CHANGE / insulation);
 				}
 
 				// cooling change
 				float coolingChange = 0;
 				if (cooling) {
-					coolingChange = internalTemp * CellarsConfig.RATE_OF_CHANGE;
+					coolingChange = internalTemp * CellarsConfig.COOlING_ITEM_RATE;
 				}
 
 				internalTemp -= coolingChange;
@@ -244,187 +244,39 @@ public class TileIceBunker extends TileEntity implements ITickable {
 		door1 = null;
 		door2 = null;
 		formed = false;
-
-		// get size
-		for (int direction = 0; direction < 4; direction++) {
-			for (int dist = 1; dist < 6; dist++) {
-				if (dist == 5) {
-					Cellars.logger.log(Level.DEBUG, "Cellar too big!");
-					return false;
-				}
-				Block block = null;
-				switch (direction) {
-				case 0:
-					block = world.getBlockState(pos.add(0, 1, dist)).getBlock();
-					break;
-				case 1:
-					block = world.getBlockState(pos.add(-dist, 1, 0)).getBlock();
-					break;
-				case 2:
-					block = world.getBlockState(pos.add(0, 1, -dist)).getBlock();
-					break;
-				case 3:
-					block = world.getBlockState(pos.add(dist, 1, 0)).getBlock();
-					break;
-				}
-
-				if (block == ModBlocks.cellarBlock || block == ModBlocks.cellarDoor) {
-					size[direction] = dist - 1;
-					break;
-				}
-			}
+		int[] CellarInfo = this.structureComplete();
+		for (int i = 0; i < CellarInfo.length; i++) {
+			// Cellars.logger.info(i + "" + CellarInfo[i]);
 		}
-		for (int dist = 2; dist <= 5; dist++) {
-			if (dist == 5) {
-				Cellars.logger.log(Level.DEBUG, "Cellar too tall");
+		for (int i = 0; i < size.length; i++) {
+			size[i] = CellarInfo[1 + i];
+		}
+		// Cellars.logger.info("cellar form check returned condition "+CellarInfo[0]);
+		switch (CellarInfo[0]) {
+		case 0:
+			insulation = 1;
+			break;
+		case 1:
+			insulation = CellarsConfig.BASICINSULATION;
+			break;
+		case 2:
+			insulation = CellarsConfig.INDUSTRIALINSULATION;
+			break;
+		}
+		formed = (CellarInfo[0] > 0);
+		if (CellarInfo[0] > 0) {
+			BlockPos[] doors = this.FindDoors(size);
+			door1 = doors[0];
+			// Cellars.logger.info(doors[0]);
+			// Cellars.logger.info(doors[1]);
+			door2 = doors[1];
+			if (door1 == null || door2 == null) {
+				formed = false;
 				return false;
 			}
-			Block block = world.getBlockState(pos.add(0, dist, 0)).getBlock();
-			if (block == ModBlocks.cellarBlock) {
-				size[4] = dist - 1;
-				break;
-			}
+			return (CellarInfo[0] > 0);
 		}
-
-		// check blocks and set entrance
-		for (int y = 0; y <= size[4] + 1; y++) {
-			for (int x = -size[1] - 1; x <= size[3] + 1; x++) {
-				for (int z = -size[2] - 1; z <= size[0] + 1; z++) {
-
-					// ice bunker
-					if (y == 0 && x == 0 && z == 0)
-						continue;
-
-					Block block = world.getBlockState(pos.add(x, y, z)).getBlock();
-
-					// skip the inside of the cellar
-					if (y > 0 && y < size[4] + 1 && x > -size[1] - 1 && x < size[3] + 1 && z > -size[2] - 1
-							&& z < size[0] + 1) {
-						if (block == ModBlocks.cellarBlock) {
-							Cellars.logger.log(Level.DEBUG, "Inside can't contain cellar block!");
-							return false;
-						}
-						continue;
-					}
-
-					// corners
-					if ((x == -size[1] - 1 || x == size[3] + 1) && (z == -size[2] - 1 || z == size[0] + 1)) {
-						if (block == ModBlocks.cellarBlock) {
-							continue;
-						}
-						Cellars.logger.log(Level.DEBUG, "Corners invalid at " + pos.add(x, y, z));
-						return false;
-					}
-
-					// door
-					if (y == 1 && block == ModBlocks.cellarDoor) {
-						// door1 not null means another door was already found
-						if (door1 != null) {
-							Cellars.logger.log(Level.DEBUG, "Too many doors!");
-							return false;
-						}
-
-						door1 = pos.add(x, y, z);
-						if (x == -size[1] - 1) {
-							door2 = door1.add(-1, 0, 0);
-						}
-						if (x == size[3] + 1) {
-							door2 = door1.add(1, 0, 0);
-						}
-						if (z == -size[2] - 1) {
-							door2 = door1.add(0, 0, -1);
-						}
-						if (z == size[2] + 1) {
-							door2 = door1.add(0, 0, 1);
-						}
-						continue;
-					}
-
-					// upper part of door
-					if (y == 2 && block == ModBlocks.cellarDoor && door1!= null ) {
-						if (!pos.add(x, y, z).equals(door1.add(0, 1, 0))) {
-							Cellars.logger.log(Level.DEBUG, "Upper door doesn't match lower door!");
-							return false;
-						}
-						continue;
-					}
-
-					// wall
-					if (!(block == ModBlocks.cellarBlock)) {
-						Cellars.logger.log(Level.DEBUG, "Cellar wall incorrect at " + pos.add(x, y, z));
-						return false;
-					}
-				}
-			}
-		}
-
-		// no door found
-		if (door1 == null) {
-			Cellars.logger.log(Level.DEBUG, "No door was found!");
-			return false;
-		}
-
-		// check the entrance
-		Vec3i direction = door1.subtract(door2);
-		boolean xAllign = direction.getX() != 0;
-		for (int y = -1; y < 3; y++) {
-			if (xAllign) {
-				for (int z = -1; z <= 1; z++) {
-					IBlockState state = world.getBlockState(door2.add(0, y, z));
-					Block block = state.getBlock();
-					if (z == 0 && (y == 0 || y == 1)) {
-						if (!(block == ModBlocks.cellarDoor)) {
-							Cellars.logger.log(Level.DEBUG, "Expected door2 but didn't get one");
-							return false;
-						}
-						continue;
-					} else if (!(block == ModBlocks.cellarBlock)) {
-						Cellars.logger.log(Level.DEBUG, "Edges of door wrong at " + door2.add(0, y, z));
-						return false;
-					}
-				}
-			} else {
-				for (int x = -1; x <= 1; x++) {
-					Block block = world.getBlockState(door2.add(x, y, 0)).getBlock();
-					if (x == 0 && (y == 0 || y == 1)) {
-						if (!(block == ModBlocks.cellarDoor)) {
-							Cellars.logger.log(Level.DEBUG, "Expected door2 but didn't get one");
-							return false;
-						}
-					} else if (!(block == ModBlocks.cellarBlock)) {
-						Cellars.logger.log(Level.DEBUG, "Edges of door wrong at " + door2.add(x, y, 0));
-						return false;
-					}
-				}
-			}
-		}
-
-		// door directions
-		if (xAllign) {
-			EnumFacing facing1 = world.getBlockState(door1).getValue(BlockDoor.FACING);
-			if (facing1 != EnumFacing.EAST && facing1 != EnumFacing.WEST) {
-				Cellars.logger.log(Level.DEBUG, "Door1 facing "+facing1);
-				return false;
-			}
-			EnumFacing facing2 = world.getBlockState(door2).getValue(BlockDoor.FACING);
-			if (facing2 != EnumFacing.EAST && facing2 != EnumFacing.WEST) {
-				Cellars.logger.log(Level.DEBUG, "Door2 facing "+facing2);
-				return false;
-			}
-		} else {
-			EnumFacing facing1 = world.getBlockState(door1).getValue(BlockDoor.FACING);
-			if (facing1 != EnumFacing.NORTH && facing1 != EnumFacing.SOUTH) {
-				Cellars.logger.log(Level.DEBUG, "Door1 facing " + facing1);
-				return false;
-			}
-			EnumFacing facing2 = world.getBlockState(door2).getValue(BlockDoor.FACING);
-			if (facing2 != EnumFacing.NORTH && facing2 != EnumFacing.SOUTH) {
-				Cellars.logger.log(Level.DEBUG, "Door2 facing "+facing2);
-				return false;
-			}
-		}
-
-		return true;
+		return false;
 	}
 
 }
