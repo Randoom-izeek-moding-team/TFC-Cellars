@@ -10,15 +10,26 @@ import randoom97.cellars.blocks.CellarBlock;
 import randoom97.cellars.blocks.BasicElectricCooler;
 import randoom97.cellars.blocks.CellarShelf;
 import randoom97.cellars.blocks.IndustrialCellarBlock;
+import randoom97.cellars.items.CopperCoolingCoil;
 import randoom97.cellars.items.IceChunks;
 import randoom97.cellars.items.IceSaw;
 import randoom97.cellars.items.IceSawBlade;
 import randoom97.cellars.items.ItemCellarDoor;
+import randoom97.cellars.items.ItemIndustrialCellarDoor;
+import randoom97.cellars.items.Radiator;
 
 public class ModItems {
+	@GameRegistry.ObjectHolder("cellars:copper_cooling_coil")
+	public static CopperCoolingCoil copperCoolingCoil;
+	
+	@GameRegistry.ObjectHolder("cellars:radiator")
+	public static Radiator radiator;
 
 	@GameRegistry.ObjectHolder("cellars:item_cellar_door")
 	public static ItemCellarDoor itemCellarDoor;
+	
+	@GameRegistry.ObjectHolder("cellars:item_industrial_cellar_door")
+	public static ItemIndustrialCellarDoor itemIndustrialCellarDoor;
 	
 	@GameRegistry.ObjectHolder("cellars:ice_chunks")
 	public static IceChunks iceChunks;
@@ -63,7 +74,12 @@ public class ModItems {
 
 	public static void initModels() {
 		itemCellarDoor.initModel();
+		itemIndustrialCellarDoor.initModel();
 		iceChunks.initModel();
+		
+		
+		copperCoolingCoil.initModel();
+		radiator.initModel();
 
 		// ice saws
 		bismuthBronzeIceSaw.initModel();
@@ -83,16 +99,21 @@ public class ModItems {
 	}
 
 	public static void registerItems(RegistryEvent.Register<Item> event) {
+
 		event.getRegistry().register(new ItemBlock(ModBlocks.cellarBlock).setRegistryName(CellarBlock.CELLAR_BLOCK));
 		event.getRegistry().register(new ItemBlock(ModBlocks.industrialCellarBlock).setRegistryName(IndustrialCellarBlock.INDUSTRIAL_CELLAR_BLOCK));
 		
 		event.getRegistry().register(new ItemCellarDoor());
+		event.getRegistry().register(new ItemIndustrialCellarDoor());
 		event.getRegistry()
 				.register(new ItemBlock(ModBlocks.blockIceBunker).setRegistryName(BlockIceBunker.BLOCK_ICE_BUNKER));
 		event.getRegistry()
 				.register(new ItemBlock(ModBlocks.basicElectricCooler).setRegistryName(BasicElectricCooler.BASIC_ELECTRIC_COOLER));
 		event.getRegistry().register(new ItemBlock(ModBlocks.cellarShelf).setRegistryName(CellarShelf.CELLAR_SHELF));
 		event.getRegistry().register(new IceChunks());
+		
+		event.getRegistry().register(new CopperCoolingCoil());
+		event.getRegistry().register(new Radiator());
 
 		// ice saws
 		event.getRegistry().register(new IceSaw(Metal.BISMUTH_BRONZE));

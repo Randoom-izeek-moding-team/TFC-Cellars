@@ -37,14 +37,16 @@ public class TileIceBunker extends CellarCore implements ITickable {
 	private float internalTemp = 20;
 	private long tickCount = 0;
 	private boolean cooling = false;
-	private float insulation =1;
+	private float insulation = 1;
+	private Block acceptibleDoors = null;
 
 	private ItemStackHandler itemStackHandler = new ItemStackHandler(SIZE) {
 
 		@Override
 		public boolean isItemValid(int slot, ItemStack stack) {
 			Block block = Block.getBlockFromItem(stack.getItem());
-			if (block == Blocks.ICE || block == BlocksTFC.SEA_ICE || block == Blocks.SNOW || stack.getItem() == ModItems.iceChunks) {
+			if (block == Blocks.ICE || block == BlocksTFC.SEA_ICE || block == Blocks.SNOW
+					|| stack.getItem() == ModItems.iceChunks) {
 				return true;
 			}
 			return false;
@@ -149,8 +151,8 @@ public class TileIceBunker extends CellarCore implements ITickable {
 
 				// check for door open
 				doorsOpen = true;
-				if (world.getBlockState(door1).getBlock() == ModBlocks.cellarDoor
-						&& world.getBlockState(door2).getBlock() == ModBlocks.cellarDoor) {
+				if (world.getBlockState(door1).getBlock() == acceptibleDoors
+						&& world.getBlockState(door2).getBlock() == acceptibleDoors) {
 					doorsOpen = world.getBlockState(door1).getValue(BlockDoor.OPEN)
 							&& world.getBlockState(door2).getValue(BlockDoor.OPEN);
 					Cellars.logger.log(Level.DEBUG, "Doors are " + (doorsOpen ? "open" : "closed"));
@@ -163,8 +165,7 @@ public class TileIceBunker extends CellarCore implements ITickable {
 				if (doorsOpen) {
 					envTempChange = (internalTemp - environTemp) * CellarsConfig.RATE_OF_CHANGE;
 				} else {
-					envTempChange = (internalTemp - environTemp)
-							* (CellarsConfig.RATE_OF_CHANGE / insulation);
+					envTempChange = (internalTemp - environTemp) * (CellarsConfig.RATE_OF_CHANGE / insulation);
 				}
 
 				// cooling change
@@ -176,7 +177,6 @@ public class TileIceBunker extends CellarCore implements ITickable {
 				internalTemp -= coolingChange;
 				internalTemp -= envTempChange;
 
-				
 				for (int y = 1; y <= size[4]; y++) {
 					for (int z = -size[2]; z <= size[0]; z++) {
 						for (int x = -size[1]; x <= size[3]; x++) {
@@ -216,16 +216,18 @@ public class TileIceBunker extends CellarCore implements ITickable {
 				}
 			}
 		}
-
+		int volume = ((1 + size[3] + size[1]) * (1 + size[2] + size[0]) * (size[4] + 1));
+		double volumeMultiplier = (Math.sqrt(405) / Math.sqrt(volume));
 		// update the tick timer
 		if (internalTemp < 0) {
-			timeToNextTick = CellarsConfig.FROZEN_TICK;
+			timeToNextTick = (int) (CellarsConfig.FROZEN_TICK*volumeMultiplier);
 		} else if (internalTemp > 20F) {
-			timeToNextTick = CellarsConfig.ROOM_TEMP_TICK;
+			timeToNextTick = (int) (CellarsConfig.ROOM_TEMP_TICK*volumeMultiplier);
 		} else {
+
 			float multiplier = 1F - (internalTemp / 20F);
-			timeToNextTick = (int) ((CellarsConfig.FROZEN_TICK - CellarsConfig.ROOM_TEMP_TICK) * multiplier
-					+ CellarsConfig.ROOM_TEMP_TICK);
+			timeToNextTick = (int) (((CellarsConfig.FROZEN_TICK - CellarsConfig.ROOM_TEMP_TICK) * multiplier
+					+ CellarsConfig.ROOM_TEMP_TICK) * volumeMultiplier);
 		}
 
 		if (snowConsumed) {
@@ -269,6 +271,7 @@ public class TileIceBunker extends CellarCore implements ITickable {
 			door1 = doors[0];
 			// Cellars.logger.info(doors[0]);
 			// Cellars.logger.info(doors[1]);
+			acceptibleDoors = this.getDoorType();
 			door2 = doors[1];
 			if (door1 == null || door2 == null) {
 				formed = false;
@@ -278,8 +281,9 @@ public class TileIceBunker extends CellarCore implements ITickable {
 		}
 		return false;
 	}
+
 	public int getTemperatureInt() {
-		int temp = (int)(getTemperature()*1000);
+		int temp = (int) (getTemperature() * 1000);
 		return temp;
 	}
 

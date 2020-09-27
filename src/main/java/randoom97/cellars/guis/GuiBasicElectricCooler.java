@@ -32,14 +32,14 @@ public class GuiBasicElectricCooler extends GuiContainer {
 		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		// Draw the energy bar
 		mc.getTextureManager().bindTexture(GUI_ELEMENTS);
-		
+
 		int energyPixels = Math.round(60 * te.getEnergyStored() / (float) te.getEnergyCapacity());
-		//int energyPixels = 45;
+		// int energyPixels = 45;
 		int emptyPixels = 60 - energyPixels;
-		
+
 		drawTexturedModalRect(guiLeft + 10, guiTop + 15 + emptyPixels, 18, emptyPixels, 18, energyPixels);
 		drawTexturedModalRect(guiLeft + 10, guiTop + 15, 0, 0, 18, emptyPixels);
-		
+
 	}
 
 	@Override
@@ -50,6 +50,16 @@ public class GuiBasicElectricCooler extends GuiContainer {
 			infoText.add("Staus: " + (te.getFormed() ? "formed" : "unformed"));
 			if (te.getFormed()) {
 				infoText.add("Doors: " + (te.getDoorsFound() ? (te.getDoorsOpen() ? "open" : "closed") : "not found"));
+				
+			}
+			this.drawHoveringText(infoText, mx, my);
+		} else if (mx >= guiLeft + 10 && mx <= guiLeft + 28 && my >= guiTop + 15 && my <= guiTop + 75) {
+			List<String> infoText = new ArrayList<String>();
+			// multiblock info here
+			infoText.add("RF: " + (te.getEnergyStored()));
+			if (te.getFormed()) {
+				infoText.add("RF/Tick: " + te.getEnergyPerTick());
+				//Cellars.logger.info("RF PER TICK:"+te.getEnergyPerTick());
 			}
 			this.drawHoveringText(infoText, mx, my);
 		}
@@ -58,11 +68,11 @@ public class GuiBasicElectricCooler extends GuiContainer {
 
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		
+
 		drawDefaultBackground();
-		
+
 		super.drawScreen(mouseX, mouseY, partialTicks);
-		
+
 		this.fontRenderer.drawString("Basic Electric Cooler: " + String.format("%.2f", te.getTemperature()) + "�C",
 				guiLeft + 20, guiTop + 7, 0x000000);
 

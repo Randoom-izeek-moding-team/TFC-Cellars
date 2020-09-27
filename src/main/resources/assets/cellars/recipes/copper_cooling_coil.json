@@ -1,0 +1,16 @@
+{
+	"result": {
+		"item": "cellars:copper_cooling_coil"
+	},
+	"pattern": [
+		"sss",
+		"s s",
+		"sss"
+	],
+	"type": "minecraft:crafting_shaped",
+	"key": {
+		"s":{
+			"item": "tfc:metal/tuyere/copper"
+		}
+	}
+}

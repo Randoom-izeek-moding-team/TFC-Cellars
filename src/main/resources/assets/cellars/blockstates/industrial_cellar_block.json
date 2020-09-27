@@ -1,9 +1,15 @@
 {
 	"forge_marker": 1,
 	"defaults": {
-		"model": "cube_all",
+		"model": "cube",
 		"textures": {
-			"all": "cellars:block/industrial_cellar_block"
+			"particle": "cellars:block/industrial_cellar_block",
+			"north": "cellars:block/industrial_cellar_block",
+			"south": "cellars:block/industrial_cellar_block",
+			"west": "cellars:block/industrial_cellar_block",
+			"east": "cellars:block/industrial_cellar_block",
+			"up": "cellars:block/industrial_cellar_block_top",
+			"down": "cellars:block/industrial_cellar_block_top"
 		}
 	},
 	"variants": {

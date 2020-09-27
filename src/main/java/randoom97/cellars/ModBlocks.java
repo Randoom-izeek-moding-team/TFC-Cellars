@@ -6,6 +6,7 @@ import randoom97.cellars.blocks.CellarBlock;
 import randoom97.cellars.blocks.CellarShelf;
 import randoom97.cellars.blocks.IndustrialCellarBlock;
 import randoom97.cellars.door.CellarDoor;
+import randoom97.cellars.door.IndustrialCellarDoor;
 import randoom97.cellars.tiles.TileCellarShelf;
 import randoom97.cellars.tiles.TileIceBunker;
 import randoom97.cellars.tiles.TileBasicElectricCooler;
@@ -23,6 +24,9 @@ public class ModBlocks {
 	
 	@GameRegistry.ObjectHolder("cellars:cellar_door")
 	public static CellarDoor cellarDoor;
+	
+	@GameRegistry.ObjectHolder("cellars:industrial_cellar_door")
+	public static IndustrialCellarDoor industrialCellarDoor;
 	
 	@GameRegistry.ObjectHolder("cellars:block_ice_bunker")
 	public static BlockIceBunker blockIceBunker;
@@ -47,6 +51,7 @@ public class ModBlocks {
 		event.getRegistry().register(new CellarBlock());
 		event.getRegistry().register(new IndustrialCellarBlock());
 		event.getRegistry().register(new CellarDoor());
+		event.getRegistry().register(new IndustrialCellarDoor());
 		event.getRegistry().register(new BlockIceBunker());
 		event.getRegistry().register(new BasicElectricCooler());
 		event.getRegistry().register(new CellarShelf());

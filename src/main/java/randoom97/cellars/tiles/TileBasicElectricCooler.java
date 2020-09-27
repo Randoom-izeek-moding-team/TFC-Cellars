@@ -34,15 +34,17 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 	private int[] size = new int[5];
 	private boolean formed = false;
 	private boolean doorsOpen = true;
-
-	private int timeToNextTick = 0;
+	private int energyPerTick = 0;
+	private int timeToNextenergyCheck = 0;
 	private float internalTemp = 20;
 	private long tickCount = 0;
 	private boolean cooling = false;
 	private float insulation = 1;
-
-	// energy
-	private int energyCapacity = CellarsConfig.BASIC_COOLER_ENERGY_CAPACITY;
+	private int tickBetweenEnergyCheck = 20;
+	private int energyCapacity = CellarsConfig.BASIC_RFPerTick * 20 * 10;// CellarsConfig.BASIC_COOLER_ENERGY_CAPACITY;
+	private int baseRFPerTick = CellarsConfig.BASIC_RFPerTick;
+	private float insulationMod = 1;
+	private Block acceptibleDoors = null;
 
 	private MyEnergyStorage energyContainer = new MyEnergyStorage(energyCapacity, 100);
 
@@ -73,7 +75,7 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 		if (compound.hasKey("internalTemp"))
 			internalTemp = compound.getFloat("internalTemp");
 		if (compound.hasKey("timeToNextTick"))
-			timeToNextTick = compound.getInteger("timeToNextTick");
+			timeToNextenergyCheck = compound.getInteger("timeToNextTick");
 		if (compound.hasKey("cooling"))
 			cooling = compound.getBoolean("cooling");
 	}
@@ -83,7 +85,7 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 		super.writeToNBT(compound);
 		compound.setTag("items", itemStackHandler.serializeNBT());
 		compound.setFloat("internalTemp", internalTemp);
-		compound.setInteger("timeToNextTick", timeToNextTick);
+		compound.setInteger("timeToNextTick", timeToNextenergyCheck);
 		compound.setBoolean("cooling", cooling);
 		return compound;
 	}
@@ -139,7 +141,7 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 	}
 
 	public void setTemperature(float temp) {
-		//Cellars.logger.info("temp: "+temp);
+		// Cellars.logger.info("temp: "+temp);
 		this.internalTemp = temp;
 	}
 
@@ -152,7 +154,11 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 		if (world.isRemote) {
 			return;
 		}
-
+		// Cellars.logger.info("cooling satus:"+cooling);
+		// Cellars.logger.info("energyPerTick:"+energyPerTick);
+		if (cooling) {
+			this.energyContainer.consumePower(energyPerTick);
+		}
 		if (tickCount % 1200 == 0) {
 			formed = isStructureComplete();
 			Cellars.logger.log(Level.DEBUG, "Formation check " + (formed ? "passed" : "failed"));
@@ -166,8 +172,8 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 				doorsOpen = true;
 				// Cellars.logger.info(door1);
 				// Cellars.logger.info(door2);
-				if (world.getBlockState(door1).getBlock() == ModBlocks.cellarDoor
-						&& world.getBlockState(door2).getBlock() == ModBlocks.cellarDoor) {
+				if (world.getBlockState(door1).getBlock() == acceptibleDoors
+						&& world.getBlockState(door2).getBlock() == acceptibleDoors) {
 					doorsOpen = world.getBlockState(door1).getValue(BlockDoor.OPEN)
 							&& world.getBlockState(door2).getValue(BlockDoor.OPEN);
 					Cellars.logger.log(Level.DEBUG, "Doors are " + (doorsOpen ? "open" : "closed"));
@@ -180,19 +186,18 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 				if (doorsOpen) {
 					envTempChange = (internalTemp - environTemp) * CellarsConfig.RATE_OF_CHANGE;
 				} else {
-					envTempChange = (internalTemp - environTemp)
-							* (CellarsConfig.RATE_OF_CHANGE / insulation );
+					envTempChange = (internalTemp - environTemp) * (CellarsConfig.RATE_OF_CHANGE / insulation);
 				}
 
 				// cooling change
 				float coolingChange = 0;
 				if (cooling) {
-					coolingChange = (internalTemp-CellarsConfig.BASIC_COOLER_TO_TEMP-5) *CellarsConfig.COOlING_BASIC_ENERGY_RATE;//CellarsConfig.COOlING_BASIC_ENERGY_RATE;
+					coolingChange = (internalTemp - CellarsConfig.BASIC_COOLER_TO_TEMP - 5)
+							* CellarsConfig.COOlING_BASIC_ENERGY_RATE;// CellarsConfig.COOlING_BASIC_ENERGY_RATE;
 				}
 
 				internalTemp -= coolingChange;
 				internalTemp -= envTempChange;
-
 				for (int y = 1; y <= size[4]; y++) {
 					for (int z = -size[2]; z <= size[0]; z++) {
 						for (int x = -size[1]; x <= size[3]; x++) {
@@ -205,28 +210,27 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 			}
 
 		}
-		if (timeToNextTick > 0) {
-			timeToNextTick--;
+		if (timeToNextenergyCheck > 0) {
+			timeToNextenergyCheck--;
 			return;
 		}
-		
-		// consume an item if there is one
+		// consume power if there is any
 		cooling = false;
-		if (internalTemp > CellarsConfig.BASIC_COOLER_TO_TEMP&&this.getEnergyStored()>20) {
-			this.energyContainer.consumePower(20);
+		int volume = ((3 + size[3] + size[1]) * (3 + size[2] + size[0]) * (size[4] + 2));
+		double volumeMultiplier = (Math.sqrt(volume) / Math.sqrt(405));
+		energyPerTick = (int) (volumeMultiplier * baseRFPerTick*insulationMod);
+		if (internalTemp > CellarsConfig.BASIC_COOLER_TO_TEMP
+				&& this.getEnergyStored() > energyPerTick * tickBetweenEnergyCheck && formed) {
 			cooling = true;
-		}
-
-		// update the tick timer
-		if (internalTemp < 0) {
-			timeToNextTick = CellarsConfig.ELECTRIC_FROZEN_TICK;
-		} else if (internalTemp > 20F) {
-			timeToNextTick = CellarsConfig.ELECTRIC_ROOM_TEMP_TICK;
+			
+			// Cellars.logger.info("volumeMultiplier:"+volumeMultiplier);
+			
+			// Cellars.logger.info("energyPerTick:"+energyPerTick);
 		} else {
-			float multiplier = 1F - (internalTemp / 20F);
-			timeToNextTick = (int) ((CellarsConfig.ELECTRIC_FROZEN_TICK - CellarsConfig.ELECTRIC_ROOM_TEMP_TICK) * multiplier
-					+ CellarsConfig.ELECTRIC_ROOM_TEMP_TICK);
+			energyPerTick = 0;
+			cooling = false;
 		}
+		timeToNextenergyCheck = tickBetweenEnergyCheck;
 	}
 
 	private void updateContainer(BlockPos pos, float temp) {
@@ -251,9 +255,11 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 			break;
 		case 1:
 			insulation = CellarsConfig.BASICINSULATION;
+			insulationMod = 2;
 			break;
 		case 2:
 			insulation = CellarsConfig.INDUSTRIALINSULATION;
+			insulationMod = 1;
 			break;
 		}
 		formed = (CellarInfo[0] > 0);
@@ -263,6 +269,7 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 			// Cellars.logger.info(doors[0]);
 			// Cellars.logger.info(doors[1]);
 			door2 = doors[1];
+			acceptibleDoors = this.getDoorType();
 			if (door1 == null || door2 == null) {
 				formed = false;
 				return false;
@@ -288,8 +295,19 @@ public class TileBasicElectricCooler extends CellarCore implements ITickable {
 	}
 
 	public int getTemperatureInt() {
-		int temp = (int)(getTemperature()*1000);
+		int temp = (int) (getTemperature() * 1000);
 		return temp;
+	}
+
+	public int getEnergyPerTick() {
+		//Cellars.logger.info("cooling:" + cooling);
+		//Cellars.logger.info("energyPerTick:" + energyPerTick);
+		return energyPerTick;
+	}
+
+	public void setEnergyPerTick(int data) {
+		//Cellars.logger.info("RFPreTickSetTo:" + data);
+		energyPerTick = data;
 	}
 
 }

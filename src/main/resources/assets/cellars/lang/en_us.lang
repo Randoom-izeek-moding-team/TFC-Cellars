@@ -1,6 +1,8 @@
 tfc.food_traits.cellar_cold=cold
 tfc.food_traits.cellar_frozen=frozen
 
+
+tile.cellars.industrial_cellar_door.name=Industrial Cellar Door
 tile.cellars.cellar_door.name=Cellar Door
 tile.cellars.block_ice_bunker.name=Ice Bunker
 tile.cellars.cellar_block.name=Cellar Block
@@ -9,6 +11,9 @@ tile.cellars.basic_electric_cooler.name=Basic Electric Cooler
 tile.cellars.cellar_shelf.name=Cellar Shelf
 
 item.cellars.ice_chunks.name=Ice Chunks
+item.cellars.ice_chunks.name=Ice Chunks
+item.cellars.copper_cooling_coil.name=Copper Cooling Coil
+item.cellars.radiator.name=Radiator 
 
 item.cellars.tfc_bismuth_bronze_ice_saw.name=Bismuth Bronze Ice Saw
 item.cellars.tfc_black_bronze_ice_saw.name=Black Bronze Ice Saw

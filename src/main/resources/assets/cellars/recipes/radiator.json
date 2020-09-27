@@ -1,0 +1,19 @@
+{
+	"result": {
+		"item": "cellars:radiator"
+	},
+	"pattern": [
+		"aaa",
+		"sss",
+		"aaa"
+	],
+	"type": "forge:ore_shaped",
+	"key": {
+		"a":{
+			"type": "forge:ore_dict", "ore": "sheetWroughtIron"
+		},
+		"s":{
+			"item": "cellars:copper_cooling_coil"
+		}
+	}
+}

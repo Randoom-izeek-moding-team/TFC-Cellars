@@ -6,9 +6,6 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import randoom97.cellars.tiles.TileBasicElectricCooler;
 
 public class ContainerBasicElectricCooler extends Container {
@@ -20,11 +17,11 @@ public class ContainerBasicElectricCooler extends Container {
 	public static final int DOORS_OPEN_ID = 2;
 	public static final int FORMED_ID = 3;
 	public static final int ENERGY_ID = 4;
-	
-	
+	public static final int ENERGY_PER_TICK_ID = 5;
+
 	public ContainerBasicElectricCooler(IInventory playerInventory, TileBasicElectricCooler te) {
 		this.te = te;
-		addOwnSlots();
+		// addOwnSlots();
 		addPlayerSlots(playerInventory);
 	}
 
@@ -43,21 +40,6 @@ public class ContainerBasicElectricCooler extends Container {
 			int x = 8 + row * 18;
 			int y = 58 + 84;
 			this.addSlotToContainer(new Slot(playerInventory, row, x, y));
-		}
-	}
-
-	private void addOwnSlots() {
-		IItemHandler itemHandler = this.te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-
-		// add our own slots
-		int slotIndex = 0;
-		for (int row = 0; row < 2; row++) {
-			for (int col = 0; col < 2; col++) {
-				int x = 71 + col * 18;
-				int y = row * 18 + 25;
-				addSlotToContainer(new SlotItemHandler(itemHandler, slotIndex, x, y));
-				slotIndex++;
-			}
 		}
 	}
 
@@ -92,24 +74,26 @@ public class ContainerBasicElectricCooler extends Container {
 	public boolean canInteractWith(EntityPlayer playerIn) {
 		return te.canInteractWith(playerIn);
 	}
-	
+
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
-		for(IContainerListener listener : listeners) {
+		for (IContainerListener listener : listeners) {
 			listener.sendWindowProperty(this, ENERGY_ID, te.getEnergyStored());
 			listener.sendWindowProperty(this, TEMPERATURE_ID, te.getTemperatureInt());
 			listener.sendWindowProperty(this, DOORS_FOUND_ID, te.getDoorsFound() ? 1 : 0);
 			listener.sendWindowProperty(this, DOORS_OPEN_ID, te.getDoorsOpen() ? 1 : 0);
 			listener.sendWindowProperty(this, FORMED_ID, te.getFormed() ? 1 : 0);
+			listener.sendWindowProperty(this, ENERGY_PER_TICK_ID, te.getEnergyPerTick());
+
 		}
 	}
-	
+
 	@Override
 	public void updateProgressBar(int id, int data) {
-		switch(id) {
+		switch (id) {
 		case TEMPERATURE_ID:
-			te.setTemperature( data/(float)1000);
+			te.setTemperature(data / (float) 1000);
 			break;
 		case DOORS_FOUND_ID:
 			te.setDoorsFound(data == 1);
@@ -123,8 +107,11 @@ public class ContainerBasicElectricCooler extends Container {
 		case ENERGY_ID:
 			te.setEnergyStored(data);
 			break;
+		case ENERGY_PER_TICK_ID:
+			te.setEnergyPerTick(data);
+			break;
 		}
-	
+
 	}
 
 }
