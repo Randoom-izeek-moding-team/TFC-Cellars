@@ -1,0 +1,17 @@
+{
+	"result": {
+		"item": "cellars:industrial_cellar_door",
+		"count": 1
+	},
+	"pattern": [
+		"pp ",
+		"pp ",
+		"pp "
+	],
+	"type": "forge:ore_shaped",
+	"key": {
+		"p":{
+			"item": "cellars:industrial_cellar_block"
+		}
+	}
+}
