@@ -19,7 +19,6 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import randoom97.cellars.Cellars;
-import randoom97.cellars.ModBlocks;
 import randoom97.cellars.ModItems;
 import randoom97.cellars.config.CellarsConfig;
 import randoom97.cellars.utils.MyEnergyStorage;
