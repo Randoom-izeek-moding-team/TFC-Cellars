@@ -3,11 +3,11 @@
 	"defaults": {
 		"model": "cube",
 		"textures": {
-			"particle": "blocks/planks_oak",
-			"north": "blocks/planks_oak",
-			"south": "blocks/planks_oak",
-			"west": "blocks/planks_oak",
-			"east": "blocks/planks_oak",
+			"particle": "cellars:block/industrial_cellar_block",
+			"north": "cellars:block/industrial_cellar_block",
+			"south": "cellars:block/industrial_cellar_block",
+			"west": "cellars:block/industrial_cellar_block",
+			"east": "cellars:block/industrial_cellar_block",
 			"up": "cellars:block/basic_electric_cooler",
 			"down": "cellars:block/basic_electric_cooler"
 		}

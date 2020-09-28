@@ -1,7 +1,7 @@
 {
 	"result": {
 		"item": "cellars:industrial_cellar_block",
-		"count": 4
+		"count": 8
 	},
 	"pattern": [
 		"pcp",
@@ -13,10 +13,10 @@
 		"p": {
 			"type": "forge:ore_dict", "ore": "sheetSteel"
 		},
-		"t": {
+		"c": {
 			"type": "forge:ore_dict", "ore": "dustKaolinite"
 		},
-		"c":{
+		"t":{
 			"item": "minecraft:clay_ball"
 		}
 	}

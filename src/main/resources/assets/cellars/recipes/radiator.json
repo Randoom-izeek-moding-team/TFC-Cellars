@@ -1,6 +1,7 @@
 {
 	"result": {
-		"item": "cellars:radiator"
+		"item": "cellars:radiator",
+		"count": 2
 	},
 	"pattern": [
 		"aaa",

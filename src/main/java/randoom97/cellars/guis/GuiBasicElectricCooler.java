@@ -36,23 +36,23 @@ public class GuiBasicElectricCooler extends GuiContainer {
 		int energyPixels = Math.round(60 * te.getEnergyStored() / (float) te.getEnergyCapacity());
 		// int energyPixels = 45;
 		int emptyPixels = 60 - energyPixels;
-
+		
 		drawTexturedModalRect(guiLeft + 10, guiTop + 15 + emptyPixels, 18, emptyPixels, 18, energyPixels);
 		drawTexturedModalRect(guiLeft + 10, guiTop + 15, 0, 0, 18, emptyPixels);
-
+		
+		String infoText = "";
+		// multiblock info here
+		infoText += ("Staus: " + (te.getFormed() ? "formed" : "unformed"))+"\n";
+		if (te.getFormed()) {
+			infoText += ("Doors: " + (te.getDoorsFound() ? (te.getDoorsOpen() ? "open" : "closed") : "not found"))+"\n";
+			
+		}
+		this.fontRenderer.drawSplitString(infoText, guiLeft+55, guiTop+30, 70,0x000000 );
 	}
 
 	@Override
 	protected void renderHoveredToolTip(int mx, int my) {
 		if (mx >= guiLeft + 5 && mx <= guiLeft + 15 && my >= guiTop + 5 && my <= guiTop + 15) {
-			List<String> infoText = new ArrayList<String>();
-			// multiblock info here
-			infoText.add("Staus: " + (te.getFormed() ? "formed" : "unformed"));
-			if (te.getFormed()) {
-				infoText.add("Doors: " + (te.getDoorsFound() ? (te.getDoorsOpen() ? "open" : "closed") : "not found"));
-				
-			}
-			this.drawHoveringText(infoText, mx, my);
 		} else if (mx >= guiLeft + 10 && mx <= guiLeft + 28 && my >= guiTop + 15 && my <= guiTop + 75) {
 			List<String> infoText = new ArrayList<String>();
 			// multiblock info here

@@ -1,11 +1,12 @@
 {
 	"result": {
-		"item": "cellars:copper_cooling_coil"
+		"item": "cellars:copper_cooling_coil",
+		"count": 2
 	},
 	"pattern": [
-		"sss",
+		" s ",
 		"s s",
-		"sss"
+		" s "
 	],
 	"type": "minecraft:crafting_shaped",
 	"key": {

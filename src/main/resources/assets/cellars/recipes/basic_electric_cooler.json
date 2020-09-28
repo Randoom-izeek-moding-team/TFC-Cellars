@@ -1,23 +1,23 @@
 {
 	"result": {
-		"item": "cellars:industrial_cellar_block",
-		"count": 4
+		"item": "cellars:basic_electric_cooler",
+		"count": 1
 	},
 	"pattern": [
 		"pcp",
-		"ctc",
+		"ttt",
 		"pcp"
 	],
 	"type": "forge:ore_shaped",
 	"key": {
 		"p": {
-			"type": "forge:ore_dict", "ore": "sheetWroughtIron"
+			"type": "forge:ore_dict", "ore": "sheetSteel"
 		},
-		"c": {
+		"t": {
 			"type": "forge:ore_dict", "ore": "dustKaolinite"
 		},
-		"t":{
-			"item": "minecraft:clay_ball"
+		"c":{
+			"item": "cellars:radiator"
 		}
 	}
 }
